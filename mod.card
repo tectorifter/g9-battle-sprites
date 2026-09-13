@@ -1,0 +1,22 @@
+return {
+  summary = "True-colour, frame-animated battle sprites for the whole national dex, loaded from the DBK animated solo-sprite pack installed in the mod's own assets/ folder -- local only, no network.",
+  author = "Gen1Recomp Mod Studio",
+  tags = { "sprite", "battle", "graphics", "gen1", "gen2" },
+  differences = {
+    added = {
+      "Every battle front/back pic the mod can resolve is drawn from the DBK animated sprite sheet instead of the game's 4-shade pic: the sheet is one horizontal frame strip, cropped and resampled in memory per frame and played as a loop.",
+      "National-dex form conventions: regional forms, megas, gigantamax and gender-distinct forms each resolve to their own sheet (CHARIZARD_MEGA_X -> CHARIZARD_1, RAICHU_ALOLA -> RAICHU_1, ALCREMIE_GMAX -> ALCREMIE_63, MEOWSTIC_FEMALE -> MEOWSTIC_1, ABOMASNOW female -> ABOMASNOW_female, ...); cosmetic-only forms with no sheet of their own fall back to their base species.",
+      "Lookup is local-only from the mod's own assets/front, assets/front_shiny, assets/back and assets/back_shiny folders -- the sole source; a sheet that is not installed there leaves the vanilla pic. The bundled assets/download_assets.py fills those folders from the DBK GitLab mirror, offline of the game.",
+      "Image fidelity comes first. Every sheet is baked at the largest scale its picture box can hold (SPRITE SIZE = MAX DETAIL, the default): kept at 1:1 where it already fits, so a small Pokemon keeps every source pixel, and shrunk no further than it must be where it does not, so a big Pokemon fills the box instead of sitting at half size inside it. SMALL / NORMAL / BIG instead divide every sheet by one whole number for strictly proportional sizes. PACK ALIGNMENT then shifts each sprite by the pack's own SpeciesMetrics FrontSprite/BackSprite offsets (data/dbk_metrics.lua), so every Pokemon stands where the pack intends.",
+      "Baking always samples the nearest source pixel (never an average), so the pack's exact colours and hard pixel edges survive at every size and each sprite reads as crisp pixel art, not a soft, blurry downscale.",
+      "The Pokedex front pic is replaced too, on both generations: the dex loads its own front-pic path rather than drawing through a battle screen, so a dedicated dex hook hands it the same baked frame (true-colour). The DEX SPRITES row turns it off.",
+      "Mod Manager rows: BATTLE SPRITES, ANIMATE, SPRITE SPEED, SHINY ART, FEMALE ART, SPRITE SIZE, PACK ALIGNMENT, DEX SPRITES.",
+    },
+    known = {
+      "The mod ships no artwork and never touches the network; it reads only what you place in assets/. Credit for the sprites belongs to the DBK solo-sprites pack author (la-base-de-sky).",
+      "Battle pics and every Pokedex front pic are replaced (gen1's entry page and gen2's entry page and list); the Summary/party icons and other UI graphics are not.",
+      "Female art only applies where the base game exposes a mon's gender.",
+    },
+  },
+  compat = { engine = ">=0.0.0-0 <2.0.0", modApi = 2 },
+}

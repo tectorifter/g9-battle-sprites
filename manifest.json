@@ -1,0 +1,29 @@
+{
+  "id": "g9-battle-sprites",
+  "name": "G9 Battle Sprites",
+  "version": "2.0.1",
+  "api": 2,
+  "entry": "main.lua",
+  "profile": "content",
+  "game_version": ">=0.1.45",
+  "games": [
+    "gen1",
+    "gen2"
+  ],
+  "category": "OTHER",
+  "priority": 250,
+  "permissions": [
+    "engine_internals"
+  ],
+  "dependencies": [],
+  "optional_dependencies": [
+    "national_dex",
+    "g9-battle-engine"
+  ],
+  "description": "True-colour, frame-animated battle sprites for the whole national dex. Replaces the battle front/back pics of every Pokemon it can resolve with the animated DBK 'solo sprites' sheets (Graphics/Pokemon/{Front,Front shiny,Back,Back shiny}). Sheets are used directly as horizontal frame strips -- no per-frame PNG splitting. Image fidelity comes first: by default (SPRITE SIZE = MAX DETAIL) every sheet is baked at the largest scale its picture box can hold -- kept at 1:1 where it already fits, shrunk no further than it must be where it does not -- so a large sheet fills the box instead of sitting at half size inside it; SMALL/NORMAL/BIG instead divide every sheet by one whole number for strictly proportional sizes. A custom battle screen (g9-Battle-Scene) instead names each sprite's own slot rect and the field's own scale multiplier, so both teams keep every species' true relative size: every sheet is baked at the pack's NATURAL 1:1 size (natural mode -- no slot box, so a species keeps the exact size its own art gives it and no two are forced to the same height or width), and its bossFight boss at x1.6 (the +0.6, bosses only); the screen also reports each slot's own headroom, so a sheet that would rise past the top of the field is folded to fit rather than clipped. Frames are always baked with nearest-neighbour sampling (fractional steps are fine: each destination pixel takes one source pixel, never an average), so pixels stay square and edges stay hard and crisp, and each sheet is aligned with the pack's own SpeciesMetrics offsets (data/dbk_metrics.lua). The mod's own assets/front, assets/front_shiny, assets/back and assets/back_shiny folders are the ONLY source -- no network access; install the sheets there with the bundled assets/download_assets.py helper. National-dex form conventions are honoured: regional forms, megas, gigantamax and female variants resolve to their own sheet, cosmetic-only forms (e.g. most Alcremie) are ignored, and unmapped forms fall back to their base species. A managed species whose sheet is still baking now draws NOTHING rather than its vanilla pic, so a trainer's send-out never flashes native art before the pack's frames are ready. The front pic on the Pokedex entry page (gen1 DexEntryMenu and gen2 PokedexMenu) is replaced with the same sheet too: the dex resolves its own front-pic path and loads it directly instead of drawing through either battle screen, so a dedicated dex hook is used; DEX SPRITES turns it off.",
+  "options_schema": "options.lua",
+  "experimental": false,
+  "repo": "",
+  "conflicts": [],
+  "incompatible": []
+}
