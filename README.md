@@ -13,3 +13,26 @@ mangalos810, Marty, MCBMechachu, MCH4R1Z4RD, Miguel, MizterBubu, N-Kin, NoelleMB
 OldSoulja, OmegalingYT, Pepsiman, PKMarioG, Pokepachito, Poki Papillon, PomPomKing, PumpkinPastel,
 RadicalCharizard, Regis, RetroNC, Robert, Rod, seleccion, SelenaArmorclaw, SkidMarc25, Snivy101, Sopita_Yorita,
 oulWardenInfinity, The King, TheAetherPlayer, TheCynicalPoet, Tinkatooni, Turi, Typhlito, uppababy.
+
+Dynamax cloud:
+https://www.deviantart.com/bearbro123/art/Transparent-Dynamax-Clouds-(Free-to-Use)-894709373
+by bearbro123
+
+Crystallized layer:
+https://www.magnific.com/free-vector/crystal-textured-background-illustration_3841868.htm#fromView=search&page=1&position=0&uuid=8ad4e077-1e0c-4339-a2ee-7151bf405fa8&track=ais_hybrid&query=Crystal+pattern
+rawpixel.com - Magnific.com
+
+Icon sprites for party screens:
+
+Pokemon Icon Sprites:
+-Gen 1-6 Pokemon Icon Sprites - Alaguesia, harveydentmd
+-Gen 7 Pokemon Icon Sprites - Marin, MapleBranchWing, Contributors to the DS Styled Gen 7+ Repository
+-Gen 8 Icon Sprites - Larry Turbo, Leparagon, magnusbanette
+-Shiny Icon Sprites - StarrWolf, Pokemon Shattered Light Team
+-PLA Pokemon Icon Sprites - LuigiTKO
+-Gen 9 Icon Sprites - ezerart, JordanosArt
+-PLA Vanilla Icon Sprites - LuigiTKO, Pikafan2000, Cesare_CBass, Vent, Cesare_Cbass, MultiDiegoDani, leParagon, JWNutz
+and thanks for Pokémon Icons Act 2.9 - Teracristalizando
+-Gen 9 Vanilla Icon Sprites - Vent, Katten, leParagon, Cesare_CBass, AlexandreV2.0, Carmanekko, GRAFAIAIMX
+also thanks to Axel Loquendo, CarmaNekko, Divaruta 666, Okyo, JLauz735, and ClaraDragon for Iconos 9na Gen gba completos
+-PLZA Icon Sprites - ezerart, camiloveso, Caruban
