@@ -1,44 +1,49 @@
-# g9-battle-sprites
-IT'S STILL A WIP, FUTURE UPDATE IS WIRING GENDER SPRITES AND SHINY WITH ENGINE.
-for now, ignore gender and shiny settings.
+====================================================================
+PROJECT CREDITS & ACKNOWLEDGEMENTS
+====================================================================
 
-Credits for assets:
-
+--- POKÉMON SPRITES & ICONS ---
+Gen 1-9 Front/Back Sprites & Assets via EeveeExpo Resource Pack:
 https://eeveeexpo.com/resources/1544/
-Gen 1-5: Luka S.J.
-Gen 6: All Contributors To Smogon X/Y Sprite Project
-Gen 7: All Contributors To Smogon Sun/Moon Sprite Project
-Gen 8: All Contributors To Smogon Sword/Shield Sprite Project
-Gen 9: All Contributors To Smogon Scarlet/Violet Sprite Project
-Luka S.J., Tenshi of War, DPertierra, Skyflyer, Hellfire_raptor, Adrix, Antiant, arinoelle, Aronousqui,
-AshnixsLaw, AyanoCloud, Azrita, Batin, BR0DE0, Caruban, Creobnil, DanEx, Diegotoon20, dimbly, EBaru, Ebaru,
-ekurepu, EricLostie, Esneider, Falcon7, Federico97_ez, Fleimer_, flea_alex, Franark122k, Hellfire0raptor,
-hexagonereal, HM100, HyperactiveFlummi, iametrine, Involuntary-Twitch, ItsYugen, jinta, justnyxnow, kayzering,
-KingOfThe-X-Roads, kiriaura, Legitimate Username, localghost, lucasomi, Lucidious89, Lucifer, Luis, MallowOut,
-mangalos810, Marty, MCBMechachu, MCH4R1Z4RD, Miguel, MizterBubu, N-Kin, NoelleMBrooks, Noobiess, Nolo33,
-OldSoulja, OmegalingYT, Pepsiman, PKMarioG, Pokepachito, Poki Papillon, PomPomKing, PumpkinPastel,
-RadicalCharizard, Regis, RetroNC, Robert, Rod, seleccion, SelenaArmorclaw, SkidMarc25, Snivy101, Sopita_Yorita,
-oulWardenInfinity, The King, TheAetherPlayer, TheCynicalPoet, Tinkatooni, Turi, Typhlito, uppababy.
+- Gen 1-5 Base: Luka S.J.
+- Gen 6: Smogon X/Y Sprite Project Contributors
+- Gen 7: Smogon Sun/Moon Sprite Project Contributors
+- Gen 8: Smogon Sword/Shield Sprite Project Contributors
+- Gen 9: Smogon Scarlet/Violet Sprite Project Contributors
+- Sprite Artists & Contributors:
+  Adrix, Antiant, arinoelle, Aronousqui, AshnixsLaw, AyanoCloud, Azrita, Batin, 
+  BR0DE0, Caruban, Creobnil, DanEx, Diegotoon20, dimbly, DPertierra, Ebaru, ekurepu, 
+  EricLostie, Esneider, Falcon7, Federico97_ez, flea_alex, Fleimer_, Franark122k, 
+  Hellfire_raptor, hexagonereal, HM100, HyperactiveFlummi, iametrine, 
+  Involuntary-Twitch, ItsYugen, jinta, justnyxnow, kayzering, KingOfThe-X-Roads, 
+  kiriaura, Legitimate Username, localghost, lucasomi, Lucidious89, Lucifer, Luis, 
+  Luka S.J., MallowOut, mangalos810, Marty, MCBMechachu, MCH4R1Z4RD, Miguel, 
+  MizterBubu, N-Kin, NoelleMBrooks, Nolo33, Noobiess, OldSoulja, OmegalingYT, 
+  Pepsiman, PKMarioG, Pokepachito, Poki Papillon, PomPomKing, PumpkinPastel, 
+  RadicalCharizard, Regis, RetroNC, Robert, Rod, seleccion, SelenaArmorclaw, 
+  SkidMarc25, Snivy101, Sopita_Yorita, SoulWardenInfinity, Tenshi of War, The King, 
+  TheAetherPlayer, TheCynicalPoet, Tinkatooni, Turi, Typhlito, uppababy.
 
-Dynamax cloud:
-https://www.deviantart.com/bearbro123/art/Transparent-Dynamax-Clouds-(Free-to-Use)-894709373
-by bearbro123
+Party Menu & UI Icon Sprites:
+- Gen 1-6 Icons: Alaguesia, harveydentmd
+- Gen 7 Icons: Marin, MapleBranchWing, Contributors to DS-Styled Gen 7+ Repo
+- Gen 8 Icons: Larry Turbo, Leparagon, magnusbanette
+- Gen 9 Icons: ezerart, JordanosArt
+- Shiny Icons: StarrWolf, Pokémon Shattered Light Team
+- PLA Icons: LuigiTKO, Pikafan2000, Cesare_CBass, Vent, MultiDiegoDani, leParagon, JWNutz
+- Vanilla Gen 9 Icons: Vent, Katten, leParagon, Cesare_CBass, AlexandreV2.0, Carmanekko, GRAFAIAIMX
+- PLZA Icons: ezerart, camiloveso, Caruban
+- Special Thanks for Icon Resources: 
+  Axel Loquendo, Carmanekko, Divaruta 666, Okyo, JLauz735, ClaraDragon, 
+  and the "Pokémon Icons Act 2.9 - Teracristalizando" Project.
 
-Crystallized layer:
-https://www.magnific.com/free-vector/crystal-textured-background-illustration_3841868.htm#fromView=search&page=1&position=0&uuid=8ad4e077-1e0c-4339-a2ee-7151bf405fa8&track=ais_hybrid&query=Crystal+pattern
-rawpixel.com - Magnific.com
+--- GRAPHICAL EFFECTS & BACKGROUNDS ---
+- Transparent Dynamax Clouds: bearbro123 (DeviantArt)
+  https://www.deviantart.com/bearbro123/art/Transparent-Dynamax-Clouds-(Free-to-Use)-894709373
+- Crystal Texture Background: Designed by rawpixel.com / Freepik
+  https://www.magnific.com/free-vector/crystal-textured-background-illustration_3841868.htm
 
-Icon sprites for party screens:
-
-Pokemon Icon Sprites:
--Gen 1-6 Pokemon Icon Sprites - Alaguesia, harveydentmd
--Gen 7 Pokemon Icon Sprites - Marin, MapleBranchWing, Contributors to the DS Styled Gen 7+ Repository
--Gen 8 Icon Sprites - Larry Turbo, Leparagon, magnusbanette
--Shiny Icon Sprites - StarrWolf, Pokemon Shattered Light Team
--PLA Pokemon Icon Sprites - LuigiTKO
--Gen 9 Icon Sprites - ezerart, JordanosArt
--PLA Vanilla Icon Sprites - LuigiTKO, Pikafan2000, Cesare_CBass, Vent, Cesare_Cbass, MultiDiegoDani, leParagon, JWNutz
-and thanks for Pokémon Icons Act 2.9 - Teracristalizando
--Gen 9 Vanilla Icon Sprites - Vent, Katten, leParagon, Cesare_CBass, AlexandreV2.0, Carmanekko, GRAFAIAIMX
-also thanks to Axel Loquendo, CarmaNekko, Divaruta 666, Okyo, JLauz735, and ClaraDragon for Iconos 9na Gen gba completos
--PLZA Icon Sprites - ezerart, camiloveso, Caruban
+--- LEGAL DISCLAIMER ---
+Pokémon is a registered trademark of Nintendo, Creatures Inc., and GAME FREAK inc. 
+This is a non-profit fan-made modification. No copyright infringement is intended. 
+All original sprite work belongs to their respective artists listed above.
