@@ -3,6 +3,7 @@ IT'S STILL A WIP, FUTURE UPDATE IS WIRING GENDER SPRITES AND SHINY WITH ENGINE.
 for now, ignore gender and shiny settings.
 
 Credits for assets:
+https://eeveeexpo.com/resources/1544/
 Luka S.J., Tenshi of War, DPertierra, Skyflyer, Hellfire_raptor, Adrix, Antiant, arinoelle, Aronousqui,
 AshnixsLaw, AyanoCloud, Azrita, Batin, BR0DE0, Caruban, Creobnil, DanEx, Diegotoon20, dimbly, EBaru, Ebaru,
 ekurepu, EricLostie, Esneider, Falcon7, Federico97_ez, Fleimer_, flea_alex, Franark122k, Hellfire0raptor,
