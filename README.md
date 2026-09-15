@@ -1,6 +1,6 @@
-====================================================================
+
 PROJECT CREDITS & ACKNOWLEDGEMENTS
-====================================================================
+=================
 
 --- POKÉMON SPRITES & ICONS ---
 Gen 1-9 Front/Back Sprites & Assets via EeveeExpo Resource Pack:
