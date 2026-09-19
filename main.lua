@@ -839,8 +839,8 @@ return function(mod)
   -- FLOAT_LIFT x height, so a bigger flyer floats higher than a small one.
   -- Clamped to at least FLOAT_LIFT_MIN sheet pixels so even a tiny floater
   -- visibly lifts clear of the ground.
-  local FLOAT_LIFT = 0.06
-  local FLOAT_LIFT_MIN = 0.05
+  local FLOAT_LIFT = 0.35
+  local FLOAT_LIFT_MIN = 2
   -- The lift for one sheet, in SOURCE pixels (callers scale it with the bake).
   local function floatLift(stem, ch)
     if spriteAnchor() ~= ANCHOR_FEET or not floatOn() then return 0 end
@@ -1564,7 +1564,7 @@ return function(mod)
   -- every frame we mark was registered here.
   local ourFrames = setmetatable({}, { __mode = "k" })
 
-  local function sheetKey(back, shiny, stem, box, divisor, zoom, maxH, fill, scale, natural, tera, cloud, shadow, front, flip)
+  local function sheetKey(back, shiny, stem, box, divisor, zoom, maxH, fill, scale, natural, tera, cloud, shadow, front, flip, portrait)
     local tag = box and ("@" .. box.w .. "x" .. box.h) or ""
     -- The uniform scale (divisor) and the integer zoom the screen will draw
     -- the baked box at belong in the identity too: they decide how every
@@ -1609,7 +1609,13 @@ return function(mod)
     -- front sheet's "f"); "Y" = mirrored across the vertical axis.
     local fr = front and "P" or ""
     local fl = flip and "Y" or ""
-    return (back and "b" or "f") .. (shiny and "s" or "n") .. tag .. div .. z .. sc .. m .. f .. nat .. te .. cl .. sh .. fr .. fl .. "/" .. stem
+    -- PORTRAIT (see frontArt): a bake of frame 1 ALONE, trimmed to that frame's
+    -- own content, is a different Image from the boxed battle sheet or from the
+    -- whole-animation union bake the portrait used before -- and it must never
+    -- be handed to a reader expecting either (the union bake has spare rows
+    -- above frame 1's head; this one does not).  "O" = one-frame portrait.
+    local po = portrait and "O" or ""
+    return (back and "b" or "f") .. (shiny and "s" or "n") .. tag .. div .. z .. sc .. m .. f .. nat .. te .. cl .. sh .. fr .. fl .. po .. "/" .. stem
   end
 
   -- The pic box a sheet is baked into.  `override` lets a custom battle screen
@@ -1681,8 +1687,25 @@ return function(mod)
   local function beginBuild(sheet, imageData)
     local W, H = imageData:getDimensions()
     if H < 1 or W < 1 then return false end
-    local count = math.max(1, math.floor((W + H / 2) / H))
-    local fw = math.floor(W / count)
+    -- PORTRAIT (sheet.portrait, set by frontArt for g9-gui's party cards): bake
+    -- the sheet's FIRST FRAME ALONE, over only its own columns -- so the union
+    -- box the scan finds (and therefore the returned Image) IS frame 1's
+    -- trimmed content.  That is what makes the frame's own top the creature's
+    -- own top, which is the one thing a caller cropping the head space needs
+    -- (the boxed bake trims to the WHOLE animation's union, so frame 1 can sit
+    -- inside it with dozens of transparent rows above its head -- a big sheet's
+    -- portrait then crops blank space).  It is also 1/count of the bake work.
+    local count
+    if sheet.portrait then
+      count = 1
+    else
+      count = math.max(1, math.floor((W + H / 2) / H))
+    end
+    -- `fw` is ALWAYS the sheet's own cell width, even for a portrait: the strip
+    -- still holds every frame, and frame 1's columns are what the scan and the
+    -- bake address (see scanChunk/buildOneFrame).  `count` is what narrows the
+    -- bake to that one frame.
+    local fw = math.floor(W / math.max(1, math.floor((W + H / 2) / H)))
     if fw < 1 then return false end
     -- Resolve the crystal film once, here, rather than per frame: the pattern
     -- is decoded and measured on first use, and a type with no colour (or a
@@ -1721,6 +1744,9 @@ return function(mod)
       maxH = sheet.maxH,
       fill = sheet.fill,
       natural = sheet.natural and true or false,
+      -- PORTRAIT: scan only frame 1's columns and skip the floater padding, so
+      -- the bake covers exactly that frame's own content (see beginBuild).
+      portrait = sheet.portrait and true or false,
       back = sheet.back, stem = sheet.stem,
       -- 3DB FLIP (option): mirror every baked frame across its vertical axis
       -- (see buildOneFrame).  Read once per sheet here, like every other bake
@@ -1744,8 +1770,12 @@ return function(mod)
     local id, W, fw = b.id, b.W, b.fw
     local last = math.min(b.H - 1, b.row + rows - 1)
     local x0, y0, x1, y1 = b.x0, b.y0, b.x1, b.y1
+    -- PORTRAIT: only frame 1's own columns are scanned (the sheet is a
+    -- horizontal strip, so that is x 0..fw-1), so the union box IS frame 1's
+    -- box rather than every frame's (see beginBuild).
+    local xLast = b.portrait and (fw - 1) or (W - 1)
     for y = b.row, last do
-      for x = 0, W - 1 do
+      for x = 0, xLast do
         local a = select(4, id:getPixel(x, y))
         if a and a > 0 then
           local lx = x - math.floor(x / fw) * fw
@@ -1791,7 +1821,11 @@ return function(mod)
     --     offset, so natural mode ignores the pack alignment.
     if b.natural then
       local scale = (b.scale and b.scale > 0) and b.scale or 1
-      local lift = floatLift(b.stem, ch)
+      -- PORTRAIT: no floater padding -- the caller crops the head space out of
+      -- this image, and padding rows BELOW the content would only enlarge the
+      -- canvas (they are transparent either way, but the crop maths should see
+      -- exactly the creature, see beginBuild).
+      local lift = (b.portrait and 0) or floatLift(b.stem, ch)
       if b.maxH and (ch + lift) * scale > b.maxH then scale = b.maxH / (ch + lift) end
       if scale <= 0 then scale = 1 end
       local dw = math.max(1, round(cw * scale))
@@ -2950,9 +2984,9 @@ return function(mod)
   -- expression `stem and getFrames(...)` truncates the call to ONE value and
   -- `pending` is silently lost (which reads as "not pending" and lets the
   -- vanilla pic through). Every call site below guards the stem separately.
-  local function getFrames(back, shiny, stem, boxOverride, divisor, zoom, maxH, fill, scale, natural, tera, cloud, shadow, front, flip)
+  local function getFrames(back, shiny, stem, boxOverride, divisor, zoom, maxH, fill, scale, natural, tera, cloud, shadow, front, flip, portrait)
     if not stem then return nil, false end
-    local key = sheetKey(back, shiny, stem, boxOverride, divisor, zoom, maxH, fill, scale, natural, tera, cloud, shadow, front, flip)
+    local key = sheetKey(back, shiny, stem, boxOverride, divisor, zoom, maxH, fill, scale, natural, tera, cloud, shadow, front, flip, portrait)
     local sheet = sheets[key]
     if not sheet then
       sheet = { key = key, back = back, shiny = shiny, stem = stem,
@@ -2963,6 +2997,7 @@ return function(mod)
                 shadow = shadow and true or false,
                 front = front and true or false,
                 flip = flip and true or false,
+                portrait = portrait and true or false,
                 status = "new" }
       sheets[key] = sheet
     end
@@ -4020,6 +4055,13 @@ return function(mod)
   local G9_HD_CELL = (ICONS and ICONS.hdCell) or 64
   local G9_HD_COLS = (ICONS and ICONS.hdCols) or 60
   local g9Atlas, g9AtlasFailed, g9AtlasWarmed = nil, false, false
+  -- The DECODED atlas, kept alongside the Image so a cell's content box can be
+  -- measured later.  It has to be kept: LÖVE 11.5 gives an Image no pixel
+  -- readback at all (Image:getData / Image:newImageData are LÖVE 0.10 API --
+  -- wrap_Image.cpp in 11.5 registers neither), so a box measured from the
+  -- Image can never be measured at all.  The ImageData is what was decoded on
+  -- the way here, so holding it costs nothing extra (see g9ContentBox).
+  local g9AtlasID = nil
   local g9Quads = {}
 
   local function g9On()
@@ -4060,6 +4102,7 @@ return function(mod)
       return nil
     end
     g9Atlas = img
+    g9AtlasID = id
     return g9Atlas
   end
 
@@ -4088,12 +4131,14 @@ return function(mod)
   -- is BOTTOM-anchored, so the spare rows sit ABOVE the creature.  A caller
   -- that wants the creature itself -- g9-gui's portrait card crops the head
   -- space -- therefore cannot use a fixed top-anchored window: it would land
-  -- on blank rows for many species.  This reads the decoded atlas back through
-  -- Image:getData and scans the cell for its opaque extremes.  Answers nil
-  -- when the pixels cannot be read (no alpha channel, a stubbed image, a
-  -- compressed texture), when the whole cell is opaque (so there is no box to
-  -- speak of), or when the cell is entirely transparent.  Hits and misses are
-  -- both cached, so the scan runs at most once per cell per session.
+  -- on blank rows for many species.  This scans the DECODED atlas (g9AtlasID,
+  -- kept by ensureG9Atlas) for the cell's opaque extremes.  It used to ask the
+  -- Image for its pixels, which LÖVE 11.5 cannot answer (Image:getData does
+  -- not exist there), so the box was always nil and the crop always took the
+  -- blank-row fallback.  Answers nil when the pixels cannot be read, when the
+  -- whole cell is opaque (so there is no box to speak of), or when the cell is
+  -- entirely transparent.  Hits and misses are both cached, so the scan runs at
+  -- most once per cell per session.
   local g9Boxes = {}
   local function g9ContentBox(index)
     local hit = g9Boxes[index]
@@ -4101,9 +4146,8 @@ return function(mod)
       if hit == false then return nil end
       return hit
     end
-    if not g9Atlas then g9Boxes[index] = false return nil end
-    local ok, data = pcall(function() return g9Atlas:getData() end)
-    if not (ok and data and type(data.getPixel) == "function") then
+    local data = g9AtlasID
+    if not (g9Atlas and data and type(data.getPixel) == "function") then
       g9Boxes[index] = false
       return nil
     end
@@ -4175,24 +4219,66 @@ return function(mod)
   -- the same core.update budget as every battle sheet, so the FIRST call
   -- usually answers `nil, pending` (the bake has not finished) and a later
   -- frame gets the Image -- exactly like iconArtHD's lazy atlas decode.
-  -- Answers (image, width, height): the image is the TRIMMED front frame at
-  -- 1:1, so a caller cropping the head can treat the frame's own top as the
-  -- creature's top (see g9-gui/ui/portraits.lua's drawHeadSpace).  A species
-  -- the pack has no sheet for keeps answering nil, so the caller falls back to
-  -- the engine's own front pic.
+  -- Answers (image, width, height, box): the image is the sheet's FIRST FRAME
+  -- trimmed to ITS OWN content box at 1:1 (see getFrames' portrait flag), so a
+  -- caller cropping the head can treat the image's top edge as the creature's
+  -- top edge.  `box` is that content box inside the image -- always
+  -- {0, 0, width, height}, the whole Image, because the trim IS the content --
+  -- and it is answered so a caller can tell this portrait bake (trimmed to the
+  -- frame) apart from an older copy's whole-animation union bake, which answers
+  -- no fourth value and needs the old best-effort anchor.  The union bake is
+  -- trimmed to the union of EVERY frame, so a big sheet's frame 1 then sat
+  -- dozens of transparent rows below that top (DRAGONITE's Mega frame has 51),
+  -- and a card cropping from the top landed on blank rows.  A species the pack
+  -- has no sheet for keeps answering nil, so the caller falls back to the
+  -- engine's own front pic.
   mod.exports.frontArt = function(mon)
     if type(mon) ~= "table" then return nil end
     local stem, shiny = monStem(mon)
     if not stem then return nil end
     -- getFrames has TWO return values: keep the call in its own statement so
-    -- `pending` is not silently truncated away.
+    -- `pending` is not silently truncated away.  `portrait` (the trailing true)
+    -- bakes frame 1 alone, trimmed to itself.
     local frames, pending = nil, false
-    frames, pending = getFrames(false, shiny, stem, nil, nil, nil, nil, nil, 1, true)
+    frames, pending = getFrames(false, shiny, stem, nil, nil, nil, nil, nil, 1, true,
+      nil, nil, nil, nil, nil, true)
     if not frames or not frames[1] then return nil, pending end
     local img = frames[1]
     local w, h = img:getDimensions()
     if not w or not h or w <= 0 or h <= 0 then return nil end
-    return img, w, h
+    return img, w, h, { x = 0, y = 0, w = w, h = h }
+  end
+
+  -- The pack's FRONT battle art for one Pokemon, ALWAYS ON, as the LIVE
+  -- ANIMATION FRAME drawn into a caller-chosen box -- the same picture, at the
+  -- same size and in the same place the summary screens above paint it.
+  -- g9-gui's ADV.STATS panel PAINTS ITS OWN PAGE (through
+  -- Shell.gen2Surface's drawWidescreen on a Gen 2 boot) rather than running the
+  -- engine's own SummaryMenu:drawPic, so neither the native gen2 wrap above nor
+  -- the pushed-summary decorator can reach it -- the option-gated always-on
+  -- accessors (frontArt's static frame 1, iconArtHD) are all it could otherwise
+  -- ask for.  This one hands it the frame the summary would be showing right
+  -- now, so that panel's sprite animates like every other summary sprite.
+  --
+  -- `box` is the picture slot in the CALLER's own coordinate space, {x, w,
+  -- bottom}: same contract as drawCustomSummaryFrame -- centred across the box
+  -- width, feet on `box.bottom`, mirrored like the engine's own summary pic.
+  -- NATIVE_SUMMARY_BOX is the default, which is the box g9-gui asks for.
+  -- Answers true when a frame was drawn; false (no error) when SUMMARY SPRITES
+  -- is off, when the pack has no sheet for this mon (eggs and UNOWN included,
+  -- see summaryStem) or while the sheet is still baking -- so the caller can
+  -- simply draw nothing.
+  mod.exports.drawSummaryFrame = function(mon, box)
+    if not (wantEnabled() and summaryOn()) then return false end
+    local stem, shiny = summaryStem(mon)
+    if not stem then return false end
+    local frames = nil
+    frames = getFramesFor(false, shiny, stem)
+    if not frames then return false end
+    diag.stats.summary = diag.stats.summary + 1
+    drawCustomSummaryFrame(frames[frameIndex(#frames)],
+      box or NATIVE_SUMMARY_BOX)
+    return true
   end
 
   -- The pack's SMALL 16x16 party-icon cell, ALWAYS ON (the same always-on
